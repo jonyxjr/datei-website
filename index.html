@@ -1,1 +1,261 @@
-g
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileVault</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="logo">
+        <div class="logo-icon">☁</div>
+        <div>
+            <h1>FileVault</h1>
+            <span>Private File Storage</span>
+        </div>
+    </div>
+
+    <div class="top-actions">
+        <button id="keyButton" class="secondary-btn">
+            🔑 Keys
+        </button>
+    </div>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <div>
+            <p class="eyebrow">PRIVATE STORAGE</p>
+            <h2>Meine Dateien</h2>
+            <p class="subtitle">
+                Dateien sicher organisieren und mit Keys schützen.
+            </p>
+        </div>
+
+        <div class="hero-actions">
+            <button id="newFolderButton" class="secondary-btn">
+                📁 Neuer Ordner
+            </button>
+
+            <button id="uploadButton" class="primary-btn">
+                ⬆ Datei hochladen
+            </button>
+        </div>
+    </section>
+
+    <div class="path-bar">
+        <button id="rootButton" class="path-root">⌂</button>
+        <div id="breadcrumb"></div>
+    </div>
+
+    <section class="storage-card">
+
+        <div class="storage-header">
+            <div>
+                <h3 id="currentFolderTitle">Meine Dateien</h3>
+                <p id="itemCount">0 Elemente</p>
+            </div>
+
+            <div class="storage-info">
+                <span id="storageUsed">0 B</span>
+            </div>
+        </div>
+
+        <div id="fileList" class="file-list"></div>
+
+        <div id="emptyState" class="empty-state">
+            <div class="empty-icon">📂</div>
+            <h3>Dieser Ordner ist leer</h3>
+            <p>Lade eine Datei hoch oder erstelle einen neuen Ordner.</p>
+
+            <button id="emptyUploadButton" class="primary-btn">
+                ⬆ Datei hochladen
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- Upload Modal -->
+<div id="uploadModal" class="modal hidden">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <div>
+                <h2>Datei hochladen</h2>
+                <p>Schütze deine Datei mit einem Key.</p>
+            </div>
+
+            <button class="close-button" data-close="uploadModal">×</button>
+        </div>
+
+        <form id="uploadForm">
+
+            <label class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" hidden>
+
+                <div class="upload-icon">⬆</div>
+                <strong>Datei auswählen</strong>
+                <span id="selectedFileText">
+                    oder Datei hier hineinziehen
+                </span>
+            </label>
+
+            <div class="selected-file hidden" id="selectedFile">
+                <span class="file-small-icon">📄</span>
+
+                <div>
+                    <strong id="selectedFileName"></strong>
+                    <span id="selectedFileSize"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="uploadKey">🔑 Zugangs-Key</label>
+                <input
+                    type="password"
+                    id="uploadKey"
+                    placeholder="Key für diese Datei"
+                    minlength="1"
+                    required
+                >
+
+                <small>
+                    Wer die Datei sehen oder herunterladen möchte, benötigt diesen Key.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>Zielordner</label>
+
+                <select id="uploadFolder">
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close="uploadModal">
+                    Abbrechen
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Datei speichern
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<!-- Folder Modal -->
+<div id="folderModal" class="modal hidden">
+    <div class="modal-box small-modal">
+
+        <div class="modal-header">
+            <div>
+                <h2>Neuer Ordner</h2>
+                <p>Erstelle einen Unterordner.</p>
+            </div>
+
+            <button class="close-button" data-close="folderModal">×</button>
+        </div>
+
+        <form id="folderForm">
+
+            <div class="form-group">
+                <label for="folderName">Ordnername</label>
+
+                <input
+                    type="text"
+                    id="folderName"
+                    placeholder="z. B. Schule"
+                    maxlength="80"
+                    required
+                >
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close="folderModal">
+                    Abbrechen
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Ordner erstellen
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<!-- Key Modal -->
+<div id="keyModal" class="modal hidden">
+    <div class="modal-box small-modal">
+
+        <div class="modal-header">
+            <div>
+                <h2>🔑 Datei freischalten</h2>
+                <p>Gib den Key für die geschützte Datei ein.</p>
+            </div>
+
+            <button class="close-button" data-close="keyModal">×</button>
+        </div>
+
+        <form id="keyForm">
+
+            <div class="locked-file-info">
+                <div class="lock-icon">🔒</div>
+
+                <div>
+                    <strong id="lockedFileName">
+                        Geschützte Datei
+                    </strong>
+
+                    <span>
+                        Key erforderlich
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="accessKey">Zugangs-Key</label>
+
+                <input
+                    type="password"
+                    id="accessKey"
+                    placeholder="Key eingeben"
+                    required
+                >
+
+                <p id="keyError" class="error-message hidden">
+                    Dieser Key ist falsch.
+                </p>
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="secondary-btn" data-close="keyModal">
+                    Abbrechen
+                </button>
+
+                <button type="submit" class="primary-btn">
+                    Freischalten
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
